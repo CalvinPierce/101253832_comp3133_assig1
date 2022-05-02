@@ -14,6 +14,9 @@ exports.resolvers = {
         getListingsByAdmin: async (parent, args) => {
             return await Listing.find({ username: args.username });
         },
+        getAllListings: async (parent, args) => {
+            return await Listing.find();
+        },
         getListingsByCurrentAdmin: async (parent, args, { user }) => {
             return await Listing.find({ username: user.username });
         },
@@ -26,6 +29,9 @@ exports.resolvers = {
         getListingsByPostalCode: async (parent, args) => {
             return await Listing.find({ postal_code: args.postal_code });
         },
+        getListingsBySearch: async (parent, args) => {
+            return await Listing.find({$or: [ {listing_title: { $regex: args.search_string, $options: 'i'} }, {city: { $regex: args.search_string, $options: 'i'} }, {postal_code: { $regex: args.search_string, $options: 'i'} } ]});
+        },
     },
 
     Mutation: {
@@ -35,6 +41,10 @@ exports.resolvers = {
         },
         login: async (parent, args) => {
             let user = await User.findOne({ username: args.username, password: args.password });
+            if (!user) {
+                console.log("Error")
+                return
+            }
             return await jwt.sign({ user }, "SUPER_SECRET", { algorithm: "HS256", subject: user._id.toString(), expiresIn: "1d" });
         },
         createListing: async (parent, args, { user }) => {

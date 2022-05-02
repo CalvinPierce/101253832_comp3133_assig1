@@ -42,8 +42,10 @@ exports.typeDefs = gql`
         getListingsByAdmin(username: String!): [Listing]
         getListingsByCurrentAdmin: [Listing]
         getListingsByName(listing_title: String!): [Listing]
+        getListingsBySearch(search_string: String!): [Listing]
         getListingsByCity(city: String!): [Listing]
         getListingsByPostalCode(postal_code: String!): [Listing]
+        getAllListings: [Listing]
     }
 
     type Mutation {
